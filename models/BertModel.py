@@ -1,3 +1,4 @@
+from __future__ import division
 DATA_HUB = dict()
 DATA_URL = 'http://d2l-data.s3-accelerate.amazonaws.com/'
 
@@ -56,6 +57,7 @@ import pandas as pd
 import requests
 from IPython import display
 from matplotlib import pyplot as plt
+from progressbar import Progressbar
 
 d2l = sys.modules[__name__]
 
@@ -299,8 +301,15 @@ def evaluate_accuracy(net, data_iter):
     metric = Accumulator(2)  # No. of correct predictions, no. of predictions
 
     with torch.no_grad():
+        i = 0
+        total = len(data_iter)
+        pBar = ProgressBar().start()
         for X, y in data_iter:
+            
             metric.add(accuracy(net(X), y), d2l.size(y))
+            pBar.update(int((i / (total - 1)) * 100))
+            i +=1
+        pBar.finish()
     return metric[0] / metric[1]
 
 class Accumulator:
@@ -2878,7 +2887,7 @@ class YelpDataset(torch.utils.data.Dataset):
 
     def __len__(self):
         return len(self.all_tokens_ids)
-        
+
 d2l.DATA_HUB['pokemon'] = (d2l.DATA_URL + 'pokemon.zip',
                            'c065c0e2593b8b161a2d7873e42418bf6a21106c')# Alias defined in config.ini
 
