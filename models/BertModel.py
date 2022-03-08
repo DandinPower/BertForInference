@@ -57,7 +57,7 @@ import pandas as pd
 import requests
 from IPython import display
 from matplotlib import pyplot as plt
-from progressbar import Progressbar
+from progressbar import ProgressBar
 
 d2l = sys.modules[__name__]
 
