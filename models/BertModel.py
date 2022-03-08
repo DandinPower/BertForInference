@@ -533,6 +533,9 @@ def evaluate_accuracy_gpu(net, data_iter, device=None):
     metric = d2l.Accumulator(2)
 
     with torch.no_grad():
+        i = 0
+        total = len(data_iter)
+        pBar = ProgressBar().start()
         for X, y in data_iter:
             if isinstance(X, list):
                 # Required for BERT Fine-tuning (to be covered later)
@@ -540,7 +543,10 @@ def evaluate_accuracy_gpu(net, data_iter, device=None):
             else:
                 X = X.to(device)
             y = y.to(device)
+            pBar.update(int((i / (total - 1)) * 100))
+            i +=1
             metric.add(d2l.accuracy(net(X), y), d2l.size(y))
+        pBar.finish()
     return metric[0] / metric[1]
 
 def train_ch6(net, train_iter, test_iter, num_epochs, lr, device):
